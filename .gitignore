@@ -1,3 +1,4 @@
 bin/
 .env
 .env.local
+tmux.conf.yml

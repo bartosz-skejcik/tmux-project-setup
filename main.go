@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"syscall"
 
 	"gopkg.in/yaml.v3"
 )
@@ -64,7 +65,7 @@ func main() {
 		log.Fatalf("Failed to create tmux session: %v", err)
 	}
 
-	// Attach to the tmux session
+	// Attach to the tmux session if no arguments are provided
 	if len(os.Args) == 1 {
 		err := attachToTmuxSession(sessionName, config.FocusWindow)
 		if err != nil {
@@ -168,8 +169,24 @@ func createTmuxSession(sessionName string, config Config) error {
 
 // Attach to the tmux session
 func attachToTmuxSession(sessionName string, focusWindow int) error {
+	if focusWindow == 0 {
+		focusWindow = 1
+	}
+
+	tmuxPath, err := exec.LookPath("tmux")
+	if err != nil {
+		return err
+	}
+
 	exec.Command("tmux", "select-window", "-t", fmt.Sprintf("%s:%d", sessionName, focusWindow)).Run()
-	return exec.Command("tmux", "attach-session", "-t", sessionName).Run()
+
+	args := []string{
+		"tmux",
+		"attach-session",
+		"-t", sessionName,
+	}
+
+	return syscall.Exec(tmuxPath, args, os.Environ())
 }
 
 // Run a command in a specific tmux window
