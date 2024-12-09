@@ -1,6 +1,43 @@
 # 🚀 Tmux Project Setup in Go
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/bartosz-skejcik/tmux-setup)](https://goreportcard.com/report/github.com/bartosz-skejcik/tmux-setup)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.com/bartosz-skejcik/tmux-setup.svg?branch=main)](https://travis-ci.com/bartosz-skejcik/tmux-setup)
+
 This Go-based application automates the creation of complex `tmux` sessions based on a YAML configuration file. It supports features like pane layouts, global defaults, dependency checks, and Git branch integration.
+
+## ✨ Features
+
+-   Automated creation of complex `tmux` sessions
+-   YAML-based configuration
+-   Pane layouts and global defaults
+-   Dependency checks
+-   Git branch integration
+-   Interactive configuration wizard
+-   Template support for reusable configurations
+
+## 📚 Table of Contents
+
+-   [Installation](#-installation)
+    -   [Prerequisites](#prerequisites)
+    -   [Install the Application System-Wide](#install-the-application-system-wide)
+-   [Running the Application](#-running-the-application)
+-   [Using the Configuration Wizard](#-using-the-configuration-wizard)
+    -   [Why Use the Wizard?](#why-use-the-wizard)
+    -   [Creating a Configuration File](#creating-a-configuration-file)
+    -   [Creating a Template](#creating-a-template)
+    -   [What Are Templates?](#what-are-templates)
+    -   [Using a Template](#using-a-template)
+    -   [When to Use Templates](#when-to-use-templates)
+-   [Configuration Options](#-configuration-options)
+    -   [Top-Level Properties](#top-level-properties)
+    -   [Defaults Properties](#defaults-properties)
+    -   [Windows Properties](#windows-properties)
+    -   [Panes Properties](#panes-properties)
+-   [Example Configuration Files](#-example-configuration-files)
+    -   [Minimal Example](#minimal-example)
+    -   [Advanced Example](#advanced-example)
+-   [Contribution Guide](#-contribution-guide)
 
 ## 📦 Installation
 
@@ -14,8 +51,8 @@ This Go-based application automates the creation of complex `tmux` sessions base
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/bartosz-skejcik/tmux-setup.git
-    cd tmux-setup
+    git clone https://github.com/bartosz-skejcik/tmux-project-setup.git
+    cd tmux-project-setup
     ```
 
 2. Build the binary:
@@ -120,16 +157,15 @@ The configuration file must be named `tmux.conf.yml`. Below is a list of support
 
 ### `windows` Properties
 
-| Property          | Required | Default Value | Description                                                             |
-| ----------------- | -------- | ------------- | ----------------------------------------------------------------------- |
-| `name`            | No       | `window-N`    | Name of the window.                                                     |
-| `directory`       | No       | `""`          | Directory to switch to before running any commands in the window.       |
-| `initial_command` | No       | `""`          | Command to run in the first pane of the window.                         |
-| `layout`          | No       | `""`          | Predefined layout for panes (`even-horizontal`, `even-vertical`, etc.). |
-| `git_branch`      | No       | `""`          | Git branch to check out in the window's directory.                      |
-| `panes`           | No       | `[]`          | List of panes to create in the window (see below).                      |
-| `pre_command`     | No       | `""`          | Command to run before the window starts.                                |
-| `post_command`    | No       | `""`          | Command to run after the window ends.                                   |
+| Property       | Required | Default Value | Description                                                             |
+| -------------- | -------- | ------------- | ----------------------------------------------------------------------- |
+| `name`         | No       | `window-N`    | Name of the window.                                                     |
+| `directory`    | No       | `""`          | Directory to switch to before running any commands in the window.       |
+| `layout`       | No       | `""`          | Predefined layout for panes (`even-horizontal`, `even-vertical`, etc.). |
+| `git_branch`   | No       | `""`          | Git branch to check out in the window's directory.                      |
+| `panes`        | No       | `[]`          | List of panes to create in the window (see below).                      |
+| `pre_command`  | No       | `""`          | Command to run before the window starts.                                |
+| `post_command` | No       | `""`          | Command to run after the window ends.                                   |
 
 ### `panes` Properties
 
@@ -147,9 +183,16 @@ The configuration file must be named `tmux.conf.yml`. Below is a list of support
 
 ```yaml
 session_name: my_session
+dependencies:
+    - nvim
+    - pnpm
 windows:
     - name: editor
-      initial_command: nvim
+      panes:
+          - initial_command: nvim .
+    - name: server
+      panes:
+          - initial_command: pnpm run dev
 ```
 
 ### Advanced Example
