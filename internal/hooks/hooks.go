@@ -1,11 +1,36 @@
 package hooks
 
 import (
+	"flag"
 	"fmt"
+	"log"
 	"os/exec"
 
 	"github.com/bartosz-skejcik/tmux-setup/internal/config"
 )
+
+func GetFlagsFromArgs(args []string) flag.FlagSet {
+	flags := flag.NewFlagSet("tmux-setup", flag.ExitOnError)
+	flags.String("template", "", "Use a template from ~/.config/tmux-setup/templates/")
+	flags.String("create-template", "", "Create a new template using the wizard")
+
+	for i, arg := range args {
+		if arg == "--template" {
+			if args[i+1] == "" {
+				log.Fatalln("Please provide a template name")
+			}
+			flags.Set("template", args[i+1])
+		}
+		if arg == "--create-template" {
+			if args[i+1] == "" {
+				log.Fatalln("Please provide a name for the template")
+			}
+			flags.Set("create-template", args[i+1])
+		}
+	}
+
+	return *flags
+}
 
 func RunPreSessionHooks(cfg config.Config) error {
 	if cfg.Defaults.PreCommand != "" {

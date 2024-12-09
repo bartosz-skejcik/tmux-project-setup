@@ -12,17 +12,21 @@ import (
 )
 
 func main() {
-	// Define flags
-	templateName := flag.String("template", "", "Use a template from ~/.config/tmux-setup/templates/")
-	createTemplate := flag.String("create-template", "", "Create a new template using the wizard")
-	flag.Parse()
+	args := os.Args
+
+	flags := hooks.GetFlagsFromArgs(args)
+
+	templateName := flags.Lookup("template").Value.(flag.Getter).Get().(string)
+	createTemplate := flags.Lookup("create-template").Value.(flag.Getter).Get().(string)
 
 	// Handle wizard with template creation
-	if len(os.Args) > 1 && os.Args[1] == "wizard" {
-		if *createTemplate != "" {
-			wizard.StartTemplateCreation(*createTemplate)
+	if len(args) > 1 && args[1] == "wizard" {
+		if createTemplate != "" {
+			wizard.StartTemplateCreation(createTemplate)
+			// wizard.Run(*createTemplate)
 		} else {
 			wizard.StartTemplateCreation("")
+			// wizard.Run("")
 		}
 		return
 	}
@@ -31,8 +35,8 @@ func main() {
 	var err error
 
 	// If template is specified, load it directly
-	if *templateName != "" {
-		cfg, err = config.LoadTemplate(*templateName)
+	if templateName != "" {
+		cfg, err = config.LoadTemplate(templateName)
 		if err != nil {
 			log.Fatalf("Failed to load template: %v", err)
 		}
@@ -75,7 +79,7 @@ func main() {
 	}
 
 	// Attach to the tmux session if no template argument is provided
-	if len(os.Args) == 1 || *templateName != "" {
+	if len(os.Args) == 1 || templateName != "" {
 		err := tmux.AttachSession(sessionName, cfg.FocusWindow)
 		if err != nil {
 			log.Fatalf("Failed to attach to tmux session: %v", err)
