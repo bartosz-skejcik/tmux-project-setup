@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/bartosz-skejcik/tmux-setup.svg?branch=main)](https://travis-ci.com/bartosz-skejcik/tmux-setup)
 
-This Go-based application automates the creation of complex `tmux` sessions based on a YAML configuration file. It supports features like pane layouts, global defaults, dependency checks, and Git branch integration.
+This Go-based application automates the creation of simple & complex `tmux` sessions based on a YAML configuration file. It supports features like pane layouts, global defaults, dependency checks, and Git branch integration.
 
 ## ✨ Features
 
