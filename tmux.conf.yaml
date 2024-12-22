@@ -1,0 +1,13 @@
+session_name: my_session
+defaults:
+  dependencies:
+    - git
+    - cargo
+    - asdf
+windows:
+  - name: editor
+    panes:
+      - initial_command: nvim .
+  - name: console
+    panes:
+      - initial_command: cargo run
