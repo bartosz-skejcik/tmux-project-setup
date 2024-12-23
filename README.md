@@ -168,13 +168,12 @@ The configuration file must be named `tmux.conf.yml`. Below is a list of support
 
 ### `panes` Properties
 
-| Property           | Required | Default Value | Description                                               |
-| ------------------ | -------- | ------------- | --------------------------------------------------------- |
-| `directory`        | No       | `""`          | Directory to switch to before running the pane's command. |
-| `initial_command`  | No       | `""`          | Command to run in the pane.                               |
-| `refresh_interval` | No       | `0`           | Interval in seconds to refresh the pane's command.        |
-| `pre_command`      | No       | `""`          | Command to run before the pane starts.                    |
-| `post_command`     | No       | `""`          | Command to run after the pane ends.                       |
+| Property          | Required | Default Value | Description                                               |
+| ----------------- | -------- | ------------- | --------------------------------------------------------- |
+| `directory`       | No       | `""`          | Directory to switch to before running the pane's command. |
+| `initial_command` | No       | `""`          | Command to run in the pane.                               |
+| `pre_command`     | No       | `""`          | Command to run before the pane starts.                    |
+| `post_command`    | No       | `""`          | Command to run after the pane ends.                       |
 
 ## 📄 Example Configuration Files
 
@@ -224,7 +223,6 @@ windows:
       - directory: ./logs
         initial_command: tail -f app.log
       - initial_command: htop
-        refresh_interval: 10
 ```
 
 ## 🤝 Contribution Guide

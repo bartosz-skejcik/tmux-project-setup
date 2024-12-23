@@ -115,3 +115,42 @@ pub fn send_keys(
 
     run_command(&cmd)
 }
+
+pub fn get_template_path(template_name: &str) -> Result<String, Error> {
+    let template_path = format!("~/.config/tmux-setup/templates/{}.yml", template_name);
+
+    if Path::new(&template_path).exists() {
+        Ok(template_path)
+    } else {
+        Err(Error::msg(format!("Template {} not found", template_name)))
+    }
+}
+
+pub fn session_exists(sess_name: &str) -> bool {
+    let output = Command::new("tmux")
+        .arg("has-session")
+        .arg("-t")
+        .arg(sess_name)
+        .output()
+        .expect("Failed to check if session exists");
+
+    output.status.success()
+}
+
+pub fn attach_session(sess_name: &str) -> Result<(), Error> {
+    let output = Command::new("tmux")
+        .arg("attach-session")
+        .arg("-t")
+        .arg(sess_name)
+        .output()?;
+
+    if output.status.success() {
+        Ok(())
+    } else {
+        Err(Error::msg(format!(
+            "Failed to attach to session {}: {}",
+            sess_name,
+            String::from_utf8_lossy(&output.stderr)
+        )))
+    }
+}

@@ -94,21 +94,45 @@ pub fn create_panes(
     window: &Window,
     default_dir: String,
 ) -> Result<(), Error> {
-    // TODO: implement create_panes
-    todo!()
-}
+    // check if the window.panes (Option<Vec<Pane>>) is empty
+    if let Some(panes) = &window.panes {
+        let mut split_type = "-h";
+        for (i, pane) in panes.iter().enumerate() {
+            if i > 0 {
+                // if the layout is present in the window and the layout has "vertical" set
+                // split_type to "-v"
+                if let Some(layout) = &window.layout {
+                    if layout.to_string().contains("vertical") {
+                        split_type = "-v";
+                    }
+                }
+                let cmd = format!("tmux split-window {split_type} -t {sess_name}:{window_idx}");
+                run_command(&cmd)?;
+            }
 
-pub fn refresh_pane(
-    sess_name: &str,
-    window_idx: usize,
-    pane_idx: usize,
-    pane: &Pane,
-) -> Result<(), Error> {
-    // TODO: implement refresh_pane
-    todo!()
-}
+            if let Some(pane_dir) = &pane.directory {
+                let resolved_dir = resolve_dir(&default_dir, pane_dir);
+                send_keys(
+                    sess_name,
+                    window_idx,
+                    i + 1,
+                    &format!("cd {}", resolved_dir),
+                )?;
+            }
 
-pub fn apply_layout(sess_name: &str, window_idx: usize, layout: &Layout) -> Result<(), Error> {
-    // TODO: implement apply_layout
-    todo!()
+            send_keys(sess_name, window_idx, i + 1, &pane.initial_command)?;
+        }
+    }
+
+    if let Some(window_layout) = &window.layout {
+        let cmd = format!(
+            "tmux select-layout -t {sess_name}:{window_idx} {layout}",
+            sess_name = sess_name,
+            window_idx = window_idx,
+            layout = window_layout
+        );
+        run_command(&cmd)?;
+    }
+
+    Ok(())
 }

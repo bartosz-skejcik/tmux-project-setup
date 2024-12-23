@@ -1,3 +1,5 @@
+use std::fmt;
+
 use anyhow::Error;
 use serde::{Deserialize, Serialize};
 
@@ -35,7 +37,6 @@ pub struct Window {
 pub struct Pane {
     pub directory: Option<String>,
     pub initial_command: String,
-    pub refresh_interval: Option<u64>,
     pub pre_command: Option<String>,
     pub post_command: Option<String>,
 }
@@ -47,6 +48,18 @@ pub enum Layout {
     MainHorizontal,
     MainVertical,
     Tiled,
+}
+
+impl fmt::Display for Layout {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Layout::EvenHorizontal => write!(f, "even-horizontal"),
+            Layout::EvenVertical => write!(f, "even-vertical"),
+            Layout::MainHorizontal => write!(f, "main-horizontal"),
+            Layout::MainVertical => write!(f, "main-vertical"),
+            Layout::Tiled => write!(f, "tiled"),
+        }
+    }
 }
 
 impl Config {
